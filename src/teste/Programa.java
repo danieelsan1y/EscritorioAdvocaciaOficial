@@ -32,8 +32,7 @@ public class Programa {
 		AudienciaDao audienciaDao = DaoFactory.criarAudiencia();
 		PessoaDao pessoaDao = DaoFactory.criarPessoa();
 		
-		Processo pro = processoDao.buscar("0001");
-		System.out.println(pro.getPessoaAutor().getNomePes());
+		Processo pro = processoDao.buscar("0003");
 
 	}
 

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.swing.Box;
@@ -24,7 +25,7 @@ import dao.model.VaraDao;
 import entities.PessoaFisica;
 import entities.PessoaJuridica;
 import entities.Processo;
-
+import entities.enums.SituacaoStatus;
 
 public class TelaDeAlterarPro extends JFrame {
 	// atributos
@@ -108,6 +109,7 @@ public class TelaDeAlterarPro extends JFrame {
 		caixas.add(new JLabel(" "));
 		caixas.add(new JLabel(" "));
 		caixas.add(new JLabel("Escreva as alterações se desejar"));
+		caixas.add(new JLabel("Para alterar o autor e ou réu utilize o CPF ou CNPJ"));
 		caixas.add(new JLabel(" "));
 
 		JPanel nroProcesso = new JPanel();
@@ -153,7 +155,7 @@ public class TelaDeAlterarPro extends JFrame {
 		JPanel cpfAutor = new JPanel();
 		cpfAutor.setLayout(new BoxLayout(cpfAutor, BoxLayout.X_AXIS));
 		situacaoPro.add(Box.createHorizontalStrut(8));
-		cpfAutor.add(new JLabel("CPF/CNPJ Autor:                 "));
+		cpfAutor.add(new JLabel("Dado do Autor:                    "));
 		bCpfAutor = new JTextField(5);
 		bCpfAutor.setMaximumSize(new Dimension(800, 20));
 		cpfAutor.add(bCpfAutor);
@@ -163,7 +165,7 @@ public class TelaDeAlterarPro extends JFrame {
 		JPanel cpfReu = new JPanel();
 		cpfReu.setLayout(new BoxLayout(cpfReu, BoxLayout.X_AXIS));
 		cpfReu.add(Box.createHorizontalStrut(8));
-		cpfReu.add(new JLabel("CPF/CNPJ Réu:                 "));
+		cpfReu.add(new JLabel("Dado do réu:                     "));
 		bCpfReu = new JTextField(5);
 		bCpfReu.setMaximumSize(new Dimension(800, 20));
 		cpfReu.add(bCpfReu);
@@ -186,22 +188,57 @@ public class TelaDeAlterarPro extends JFrame {
 	public void acaoBotoes() {
 		ActionListenerTelaPrincipal albotoes = new ActionListenerTelaPrincipal();
 		consultar.addActionListener(albotoes);
+		alterar.addActionListener(albotoes);
 	}
 
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == consultar) {
 				Processo pro = processoDao.buscar(barraConsulta.getText());
-				System.out.println(pro.getPessoaAutor().getNomePes());
 				bNroProcesso.setText(pro.getNroProcesso());
 				bDataAberturaPro.setText(sdf.format(pro.getDataAbertura()));
-				if(pro.getDataConclusao()!= null) {
+				if (pro.getDataConclusao() != null) {
 					bDataConclusaoPro.setText(sdf.format(pro.getDataConclusao()));
 				}
 				bSituacao.setText(String.valueOf(pro.getSitucacao()));
-				if(((PessoaJuridica) pro.getPessoaAutor()).getCpnjPes().length() == 14) {
-					bCpfAutor.setText(((PessoaJuridica) pro.getPessoaAutor()).getCpnjPes());
+
+				bCpfAutor.setText(pro.getPessoaAutor().getNomePes());
+				bCpfReu.setText(pro.getPessoaReu().getNomePes());
+				bDesVara.setText(pro.getVara().getDesVara());
+			}
+			if(e.getSource() == alterar) {
+				Processo pro = processoDao.buscar(barraConsulta.getText());
+				pro.setNroProcesso(bNroProcesso.getText());
+				pro.setSitucacao(SituacaoStatus.valueOf(bSituacao.getText()));
+				if(!(bCpfAutor.getText().equals(pro.getPessoaAutor().getNomePes()))) {
+					if(bCpfAutor.getText().length() == 11) {
+						PessoaFisica pes = pessoaFisicaDao.buscar(bCpfAutor.getText());
+						pro.setPessoaAutor(pes);
+					}else {
+						PessoaJuridica pes = pessoaJuridicaDao.buscar(bCpfAutor.getText());
+						pro.setPessoaAutor(pes);
+					}
 				}
+				if(!(bCpfReu.getText().equals(pro.getPessoaReu().getNomePes()))) {
+					if(bCpfReu.getText().length() == 11) {
+						PessoaFisica pes = pessoaFisicaDao.buscar(bCpfReu.getText());
+						pro.setPessoaReu(pes);
+					}else {
+						PessoaJuridica pes = pessoaJuridicaDao.buscar(bCpfReu.getText());
+						pro.setPessoaReu(pes);
+					}
+				}
+				try {
+					pro.setDataAbertura(sdf.parse(bDataAberturaPro.getText()));
+					pro.setDataConclusao(sdf.parse(bDataConclusaoPro.getText()));
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				} finally {
+					processoDao.atualizar(pro);
+					JOptionPane.showMessageDialog(null, "processo alterado com sucesso!", "",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+				
 			}
 
 		}

@@ -256,10 +256,10 @@ class TelaDeCadastroPro extends JFrame {
 				excluir.setText(getName());
 			}
 			if (e.getSource() == cadastrados) {
-
+				TelaDeListaPro tela = new TelaDeListaPro();
 			}
 			if (e.getSource() == alterar) {
-
+				TelaDeAlterarPro tela = new TelaDeAlterarPro ();
 			}
 
 		}

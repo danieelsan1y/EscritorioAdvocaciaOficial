@@ -36,7 +36,7 @@ class TelaDeListarTrib extends JFrame {
 	TribunalDao tribunalDao = DaoFactory.criarTribunal();
 	
 	JPanel tabelaVara = new JPanel();
-	JPanel tabelaPro = new JPanel();
+	//JPanel tabelaPro = new JPanel();
 	JPanel divisaoPrincipal = new JPanel();
 	JPanel divisaoCentro = new JPanel();
 	JPanel sairTela = new JPanel();
@@ -77,8 +77,8 @@ class TelaDeListarTrib extends JFrame {
 		add("North", texto);
 		divisaoCentro.add("North", divisaoPrincipal);
 		divisaoPrincipal.add("North", atributos);
-		divisaoPrincipal.add("East", tabelaVara);
-		divisaoPrincipal.add("Center", tabelaPro);
+		divisaoPrincipal.add("Center", tabelaVara);
+		//divisaoPrincipal.add("Center", tabelaPro);
 		divisaoPrincipal.add("South", sairTela);
 
 	}
@@ -102,7 +102,7 @@ class TelaDeListarTrib extends JFrame {
 		JTable tabela_Vara;
 		DefaultTableModel modelo_Vara;
 
-		tabelaVara.setLayout(new BoxLayout(tabelaVara, BoxLayout.Y_AXIS));
+		tabelaVara.setLayout(new BoxLayout(tabelaVara, BoxLayout.X_AXIS));
 
 		JPanel textoVara = new JPanel();
 		atributos.add(textoVara);
@@ -149,8 +149,8 @@ class TelaDeListarTrib extends JFrame {
 
 		tabela_pro = new JTable(modelo_pro);
 		JScrollPane barraRolagemPro = new JScrollPane(tabela_pro);
-		tabelaPro.add(barraRolagemPro);
-		tabelaPro.add(Box.createRigidArea(new Dimension(10, 10)));
+		tabelaVara.add(barraRolagemPro);
+		tabelaVara.add(Box.createRigidArea(new Dimension(10, 10)));
 		
 		
 		
@@ -173,12 +173,7 @@ class TelaDeListarTrib extends JFrame {
 				Tribunal obj= tribunalDao.buscar(barraConsulta.getText());
 				ResultadoProcessos(obj);
 				
-				ThreadAudiencia t01 = new ThreadAudiencia("Thread01", "0001");
-				//ThreadAudiencia t02 = new ThreadAudiencia("Thread02", 10);
-				t01.setPriority(Thread.NORM_PRIORITY - 1);
-				//t02.setPriority(Thread.NORM_PRIORITY + 5);
-				t01.start();
-				//t02.start();
+
 				
 		
 			}

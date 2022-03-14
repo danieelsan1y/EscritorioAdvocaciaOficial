@@ -1,4 +1,4 @@
-package tela.audiencia;
+package tela.custo;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,9 +23,10 @@ import dao.model.DaoFactory;
 import dao.model.ProcessoDao;
 import dao.model.TribunalDao;
 import entities.Audiencia;
+import entities.Custo;
 import entities.Processo;
 
-public class TeladeCadastroAudi extends JFrame {
+public class TeladeCadastroCusto extends JFrame {
 	// atributos
 	ProcessoDao processoDao = DaoFactory.criarProcesso();
 	CustoDao custoDao = DaoFactory.criarCusto();
@@ -50,10 +51,10 @@ public class TeladeCadastroAudi extends JFrame {
 	JButton inserir = new JButton("INSERIR"), consultar = new JButton("CONSULTAR"), alterar = new JButton("ALTERAR"),
 			excluir = new JButton("EXCLUIR"), limpar = new JButton("LIMPAR"), cadastrados = new JButton("CONSULTAR");
 
-	JTextField bNroAudi, bDataAudi, bParecerAudi, BExclusao, bProcessoAudi, bConsulta;
+	JTextField bNroCusto, bDataCusto, bDesCusto, BExclusao, bValCusto, bConsulta, bProcessoCusto;
 
-	public TeladeCadastroAudi() {
-		super("Cadastro Audiência");
+	public TeladeCadastroCusto() {
+		super("Cadastro Custo");
 		montarTela();
 		getContentPane().add(divisaoPrincipal);
 		setSize(800, 700);
@@ -101,46 +102,56 @@ public class TeladeCadastroAudi extends JFrame {
 
 	public void inserirCampos() {
 
-		textoCadastro.add(new JLabel("Cadastrar Audiência"));
-		JPanel nroAudiencia = new JPanel();
-		nroAudiencia.setLayout(new BoxLayout(nroAudiencia, BoxLayout.X_AXIS));
-		nroAudiencia.add(Box.createHorizontalStrut(8));
-		nroAudiencia.add(new JLabel("Numero:          "));
-		bNroAudi = new JTextField(5);
-		bNroAudi.setMaximumSize(new Dimension(800, 20));
-		nroAudiencia.add(bNroAudi);
-		nroAudiencia.add(Box.createHorizontalStrut(5));
-		caixas.add(nroAudiencia);
+		textoCadastro.add(new JLabel("Cadastrar Custo"));
+		JPanel nroCusto = new JPanel();
+		nroCusto.setLayout(new BoxLayout(nroCusto, BoxLayout.X_AXIS));
+		nroCusto.add(Box.createHorizontalStrut(8));
+		nroCusto.add(new JLabel("Numero:          "));
+		bNroCusto= new JTextField(5);
+		bNroCusto.setMaximumSize(new Dimension(800, 20));
+		nroCusto.add(bNroCusto);
+		nroCusto.add(Box.createHorizontalStrut(5));
+		caixas.add(nroCusto);
 
-		JPanel dataAudi = new JPanel();
-		dataAudi.setLayout(new BoxLayout(dataAudi, BoxLayout.X_AXIS));
-		dataAudi.add(Box.createHorizontalStrut(8));
-		dataAudi.add(new JLabel("Data:                "));
-		bDataAudi = new JTextField(5);
-		bDataAudi.setMaximumSize(new Dimension(800, 20));
-		dataAudi.add(bDataAudi);
-		dataAudi.add(Box.createHorizontalStrut(5));
-		caixas.add(dataAudi);
+		JPanel dataCusto = new JPanel();
+		dataCusto.setLayout(new BoxLayout(dataCusto, BoxLayout.X_AXIS));
+		dataCusto.add(Box.createHorizontalStrut(8));
+		dataCusto.add(new JLabel("Data:                "));
+		bDataCusto = new JTextField(5);
+		bDataCusto.setMaximumSize(new Dimension(800, 20));
+		dataCusto.add(bDataCusto);
+		dataCusto.add(Box.createHorizontalStrut(5));
+		caixas.add(dataCusto);
 
-		JPanel parecerAudi = new JPanel();
-		parecerAudi.setLayout(new BoxLayout(parecerAudi, BoxLayout.X_AXIS));
-		parecerAudi.add(Box.createHorizontalStrut(8));
-		parecerAudi.add(new JLabel("Parecer:         "));
-		bParecerAudi = new JTextField(5);
-		bParecerAudi.setMaximumSize(new Dimension(800, 20));
-		parecerAudi.add(bParecerAudi);
-		parecerAudi.add(Box.createHorizontalStrut(5));
-		caixas.add(parecerAudi);
+		JPanel desCusto = new JPanel();
+		desCusto.setLayout(new BoxLayout(desCusto, BoxLayout.X_AXIS));
+		desCusto.add(Box.createHorizontalStrut(8));
+		desCusto.add(new JLabel("Parecer:         "));
+		bDesCusto = new JTextField(5);
+		bDesCusto.setMaximumSize(new Dimension(800, 20));
+		desCusto.add(bDesCusto);
+		desCusto.add(Box.createHorizontalStrut(5));
+		caixas.add(desCusto);
+		
+		JPanel valorCusto = new JPanel();
+		valorCusto.setLayout(new BoxLayout(valorCusto, BoxLayout.X_AXIS));
+		valorCusto.add(Box.createHorizontalStrut(8));
+		valorCusto.add(new JLabel("Valor:              "));
+		bValCusto = new JTextField(5);
+		bValCusto.setMaximumSize(new Dimension(800, 20));
+		valorCusto.add(bValCusto);
+		valorCusto.add(Box.createHorizontalStrut(5));
+		caixas.add(valorCusto);
 
-		JPanel processoAudi = new JPanel();
-		processoAudi.setLayout(new BoxLayout(processoAudi, BoxLayout.X_AXIS));
-		processoAudi.add(Box.createHorizontalStrut(8));
-		processoAudi.add(new JLabel("Numero do Processo:         "));
-		bProcessoAudi = new JTextField(5);
-		bProcessoAudi.setMaximumSize(new Dimension(800, 20));
-		processoAudi.add(bProcessoAudi);
-		processoAudi.add(Box.createHorizontalStrut(5));
-		caixas.add(processoAudi);
+		JPanel processoCusto = new JPanel();
+		processoCusto.setLayout(new BoxLayout(processoCusto, BoxLayout.X_AXIS));
+		processoCusto.add(Box.createHorizontalStrut(8));
+		processoCusto.add(new JLabel("Nº Processo:         "));
+		bProcessoCusto = new JTextField(5);
+		bProcessoCusto.setMaximumSize(new Dimension(800, 20));
+		processoCusto.add(bProcessoCusto);
+		processoCusto.add(Box.createHorizontalStrut(5));
+		caixas.add(processoCusto);
 
 		caixas.add(inserir);
 		caixas.add(new JLabel("      "));
@@ -148,7 +159,7 @@ public class TeladeCadastroAudi extends JFrame {
 		caixas.add(new JLabel("      "));
 
 		JPanel consulta = new JPanel();
-		consulta.add(new JLabel("Digite o numero da audiencia:  "));
+		consulta.add(new JLabel("Digite o numero do custo:  "));
 		BExclusao = new JTextField(14);
 		consulta.add(BExclusao);
 		consulta.add(excluir);
@@ -161,27 +172,32 @@ public class TeladeCadastroAudi extends JFrame {
 		caixas.add(caixas.add(Box.createGlue()));
 
 	}
-	public void resultadoConsulta (Audiencia audi) {
+	public void resultadoConsulta (Custo custo) {
 		
 		
-		JPanel rNroAudi = new JPanel();
-		rNroAudi.add(new JLabel("Numero Audiencia: "));
-		rNroAudi.add(new JLabel(audi.getNroAudi()));
-		caixas.add(rNroAudi);
+		JPanel rNroCusto = new JPanel();
+		rNroCusto.add(new JLabel("Numero: "));
+		rNroCusto.add(new JLabel(custo.getNroCusto()));
+		caixas.add(rNroCusto);
 
-		JPanel rdataAudi = new JPanel();
-		rdataAudi.add(new JLabel("Data: "));
-		rdataAudi.add(new JLabel(String.valueOf(audi.getDataAudi())));
-		caixas.add(rdataAudi);
+		JPanel rdataCusto = new JPanel();
+		rdataCusto.add(new JLabel("Data: "));
+		rdataCusto.add(new JLabel(String.valueOf(sdf.format(custo.getDataCusto()))));
+		caixas.add(rdataCusto);
 
-		JPanel rParecer = new JPanel();
-		rParecer.add(new JLabel("Parecer: "));
-		rParecer.add(new JLabel(audi.getParecer()));
-		caixas.add(rParecer);
+		JPanel rDesCusto = new JPanel();
+		rDesCusto.add(new JLabel("Descrição: "));
+		rDesCusto.add(new JLabel(custo.getDesCusto()));
+		caixas.add(rDesCusto);
+		
+		JPanel rValCusto = new JPanel();
+		rValCusto.add(new JLabel("Valor: "));
+		rValCusto.add(new JLabel(String.valueOf(custo.getValCusto())));
+		caixas.add(rValCusto);
 
 		JPanel rNroProcesso = new JPanel();
-		rNroProcesso.add(new JLabel("nroProcesso: "));
-		rNroProcesso.add(new JLabel(audi.getProcesso().getNroProcesso()));
+		rNroProcesso.add(new JLabel("Nº Processo: "));
+		rNroProcesso.add(new JLabel(custo.getProcesso().getNroProcesso()));
 		caixas.add(rNroProcesso);
 		caixas.add(new JLabel("      "));
 		caixas.add(new JLabel("      "));
@@ -204,48 +220,52 @@ public class TeladeCadastroAudi extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == inserir) {
-				if(bProcessoAudi.getText().isEmpty() && bNroAudi.getText().isEmpty()) {
-					
-				}else {
-					Processo pro = processoDao.buscar(bProcessoAudi.getText());
-					try {
-						Audiencia audi = new Audiencia(sdf.parse(bDataAudi.getText()), bParecerAudi.getText(), 
-								pro, bNroAudi.getText());
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-					} finally {
-						JOptionPane.showMessageDialog(null, "Audiencia adicionada com sucesso!", "",
-								JOptionPane.INFORMATION_MESSAGE);
-					}
+				Processo pro = processoDao.buscar(bProcessoCusto.getText());
+				Custo custo = null;
+				try {
+					custo = new Custo(sdf.parse(bDataCusto.getText()), bDesCusto.getText(), Double.valueOf(bValCusto.getText()), pro, bNroCusto.getText());
+				} catch (NumberFormatException e1) {
+					e1.printStackTrace();
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}  finally {
+					custoDao.inserir(custo);
+					JOptionPane.showMessageDialog(null, "Custo inserido com sucesso!", "",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
+				
+				
 	
 			}
 			if (e.getSource() == consultar) {
-
-				Audiencia audi = audienciaDao.buscar(BExclusao.getText());
-				resultadoConsulta(audi);
-				JOptionPane.showMessageDialog(null, "Audiencia consultada com sucesso!", "",
+				Custo custo = custoDao.buscar(BExclusao.getText());
+				resultadoConsulta(custo);
+				JOptionPane.showMessageDialog(null, "Custo consultado com sucesso!", "",
 						JOptionPane.INFORMATION_MESSAGE);
+
 
 			}
 			if (e.getSource() == excluir) {
-				Audiencia audi = audienciaDao.buscar(BExclusao.getText());
-				audienciaDao.deletar(audi);
-				JOptionPane.showMessageDialog(null, "Audiencia excluida com sucesso!", "",
+				Custo custo = custoDao.buscar(BExclusao.getText());
+				custoDao.deletar(custo);
+				JOptionPane.showMessageDialog(null, "Custo excluido com sucesso!", "",
 						JOptionPane.INFORMATION_MESSAGE);
+				
+
 				
 			}
 			if (e.getSource() == limpar) {
-				bDataAudi.setText("");
-				bNroAudi.setText("");
-				bParecerAudi.setText("");
 				BExclusao.setText("");
-				bProcessoAudi.setText("");
+				bDataCusto.setText("");
+				bDesCusto.setText("");
+				bValCusto.setText("");
+				bProcessoCusto.setText("");
+
 			}
 			if (e.getSource() == cadastrados) {
 			}
 			if (e.getSource() == alterar) {
-				TelaDeAlterarAudi audi = new TelaDeAlterarAudi();
+				TelaDeAlterarCusto tela = new TelaDeAlterarCusto();
 
 			}
 		}

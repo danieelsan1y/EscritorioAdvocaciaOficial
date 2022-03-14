@@ -136,6 +136,7 @@ public class ProcessoDaoJDBC implements ProcessoDao {
 				pro.setIdProcesso(rs.getInt("idProcesso"));
 				pro.setNroProcesso(rs.getString("nroProcesso"));
 				pro.setDataAbertura(rs.getDate("dataAbertura"));
+				pro.setDataConclusao(rs.getDate("dataConclusao"));
 				pro.setSitucacao(SituacaoStatus.valueOf(rs.getString("situacao")));
 
 				return pro;

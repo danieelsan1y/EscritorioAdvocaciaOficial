@@ -32,7 +32,7 @@ class TelaDeListaPro extends JFrame {
 	ProcessoDao processoDao = DaoFactory.criarProcesso();
 	CustoDao custoDao = DaoFactory.criarCusto();
 	AudienciaDao audienciaDao = DaoFactory.criarAudiencia();
-	JPanel tabelaVara = new JPanel();
+	//JPanel tabelaVara = new JPanel();
 	JPanel tabelaPro = new JPanel();
 	JPanel divisaoPrincipal = new JPanel();
 	JPanel divisaoCentro = new JPanel();
@@ -74,7 +74,7 @@ class TelaDeListaPro extends JFrame {
 		add("North", texto);
 		divisaoCentro.add("North", divisaoPrincipal);
 		divisaoPrincipal.add("North", atributos);
-		divisaoPrincipal.add("East", tabelaVara);
+		//divisaoPrincipal.add("East", tabelaVara);
 		divisaoPrincipal.add("Center", tabelaPro);
 		divisaoPrincipal.add("South", sairTela);
 
@@ -91,6 +91,7 @@ class TelaDeListaPro extends JFrame {
 		consulta.add(barraConsulta);
 		consulta.add(consultar);
 		atributos.add(consulta);
+		atributos.add(new JLabel("Lista de Audiências                                                                  Lista de Custos"));
 
 	}
 
@@ -99,7 +100,10 @@ class TelaDeListaPro extends JFrame {
 		JTable tabela_audi;
 		DefaultTableModel modelo_audi;
 
-		tabelaVara.setLayout(new BoxLayout(tabelaVara, BoxLayout.Y_AXIS));
+		//tabelaVara.setLayout(new BoxLayout(tabelaVara, BoxLayout.Y_AXIS));
+		//tabelaVara.add(new JLabel("Lista de audiências "));
+		//tabelaPro.setLayout(new BoxLayout(tabelaVara, BoxLayout.Y_AXIS));
+		//tabelaPro.add(new JLabel("Lista de processos "));
 
 		JPanel textoaudi = new JPanel();
 		atributos.add(textoaudi);
@@ -119,8 +123,8 @@ class TelaDeListaPro extends JFrame {
 
 		tabela_audi = new JTable(modelo_audi);
 		JScrollPane barraRolagem = new JScrollPane(tabela_audi);
-		tabelaVara.add(barraRolagem);
-		tabelaVara.add(Box.createRigidArea(new Dimension(10, 10)));
+		tabelaPro.add(barraRolagem);
+		tabelaPro.add(Box.createRigidArea(new Dimension(10, 10)));
 		
 
 		
@@ -133,6 +137,7 @@ class TelaDeListaPro extends JFrame {
 		tabela.setLayout(new BoxLayout(tabela, BoxLayout.Y_AXIS));
 		JPanel textopro = new JPanel();
 		textopro.add(new JLabel("Processos"));
+		tabela.add(textopro);
 		//atributos.add(textoVara);
 		String[] colunasCusto = { "Número", "Data", "Descrição", "Valor"};
 		modelo_custo = new DefaultTableModel(colunasCusto, 0);
@@ -148,6 +153,7 @@ class TelaDeListaPro extends JFrame {
 		JScrollPane barraRolagemPro = new JScrollPane(tabela_custo);
 		tabelaPro.add(barraRolagemPro);
 		tabelaPro.add(Box.createRigidArea(new Dimension(10, 10)));
+	
 		
 		
 
@@ -170,12 +176,9 @@ class TelaDeListaPro extends JFrame {
 				Processo pro = processoDao.buscar(barraConsulta.getText());
 				ResultadoProcessos(pro);
 				
-				ThreadAudiencia t01 = new ThreadAudiencia("Thread01", "0001");
-				//ThreadAudiencia t02 = new ThreadAudiencia("Thread02", 10);
+				ThreadAudiencia t01 = new ThreadAudiencia("Thread01", pro.getNroProcesso());
 				t01.setPriority(Thread.NORM_PRIORITY - 1);
-				//t02.setPriority(Thread.NORM_PRIORITY + 5);
 				t01.start();
-				//t02.start();
 		
 			}
 			if (e.getSource() == sair) {
