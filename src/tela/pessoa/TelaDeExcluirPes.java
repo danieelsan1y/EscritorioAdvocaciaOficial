@@ -88,19 +88,37 @@ public class TelaDeExcluirPes extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == excluir) {
 				int tamanho = 0;
-				tamanho = barraExcluir.getText().length();
-				
-				if (tamanho == 11) {
-					PessoaFisica pes = pessoaFisicaDao.buscar(barraExcluir.getText());
-					pessoaFisicaDao.deletar(pes);
-					JOptionPane.showMessageDialog(null, "Pessoa excluida com sucesso!", "",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
-				if (tamanho == 14) {
-					PessoaJuridica pes = pessoaJuridicaDao.buscar(barraExcluir.getText());
-					pessoaJuridicaDao.deletar(pes);
-					JOptionPane.showMessageDialog(null, "Pessoa excluida com sucesso!", "",
-							JOptionPane.INFORMATION_MESSAGE);
+				if (barraExcluir.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					tamanho = barraExcluir.getText().length();
+					if (tamanho == 11) {
+						PessoaFisica pes = pessoaFisicaDao.buscar(barraExcluir.getText());
+						if (pes == null) {
+							JOptionPane.showMessageDialog(null, "Pessoa não encontrada!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							pessoaFisicaDao.deletar(pes);
+							JOptionPane.showMessageDialog(null, "Pessoa excluida com sucesso!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					} else {
+						if (tamanho == 14) {
+							PessoaJuridica pes = pessoaJuridicaDao.buscar(barraExcluir.getText());
+							if (pes == null) {
+								JOptionPane.showMessageDialog(null, "Pessoa não encontrada!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							} else {
+								pessoaJuridicaDao.deletar(pes);
+								JOptionPane.showMessageDialog(null, "Pessoa excluida com sucesso!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Tamanho inválido!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+
 				}
 
 			}

@@ -170,14 +170,25 @@ class TelaDeAlterarCusto extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == consultar) {
-				Custo custo = custoDao.buscar(barraConsulta.getText());
-				bDataCusto.setText(sdf.format(custo.getDataCusto()));
-				bDesCusto.setText(custo.getDesCusto());
-				bNroCusto.setText(custo.getNroCusto());
-				bValCusto.setText(String.valueOf(custo.getValCusto()));
-				bProcessoCusto.setText(custo.getProcesso().getNroProcesso());
-				JOptionPane.showMessageDialog(null, "Custo consultado com sucesso!", "",
-						JOptionPane.INFORMATION_MESSAGE);
+				if(barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Custo custo = custoDao.buscar(barraConsulta.getText());
+					if(custo == null ) {
+						bDataCusto.setText(sdf.format(custo.getDataCusto()));
+						bDesCusto.setText(custo.getDesCusto());
+						bNroCusto.setText(custo.getNroCusto());
+						bValCusto.setText(String.valueOf(custo.getValCusto()));
+						bProcessoCusto.setText(custo.getProcesso().getNroProcesso());
+						JOptionPane.showMessageDialog(null, "Custo consultado com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null, "Custo não encontrado!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+
+
 
 			}
 			if (e.getSource() == limpar) {
@@ -193,20 +204,29 @@ class TelaDeAlterarCusto extends JFrame {
 
 					Custo custo = custoDao.buscar(barraConsulta.getText());
 					Processo pro = processoDao.buscar(bProcessoCusto.getText());
-
-					custo.setDesCusto(bDesCusto.getText());
-					custo.setNroCusto(bNroCusto.getText());
-					custo.setValCusto(Double.valueOf(bValCusto.getText()));
-					custo.setProcesso(pro);
-
-					try {
-						custo.setDataCusto(sdf.parse(bDataCusto.getText()));
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-					} finally {
-						custoDao.atualizar(custo);
-						JOptionPane.showMessageDialog(null, "Custo alterado com sucesso!", "",
+					if (custo == null) {
+						JOptionPane.showMessageDialog(null, "Custo não encontrado!", "",
 								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						if (pro == null) {
+							JOptionPane.showMessageDialog(null, "Processo não encontrado!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							custo.setDesCusto(bDesCusto.getText());
+							custo.setNroCusto(bNroCusto.getText());
+							custo.setValCusto(Double.valueOf(bValCusto.getText()));
+							custo.setProcesso(pro);
+
+							try {
+								custo.setDataCusto(sdf.parse(bDataCusto.getText()));
+							} catch (ParseException e1) {
+								e1.printStackTrace();
+							} finally {
+								custoDao.atualizar(custo);
+								JOptionPane.showMessageDialog(null, "Custo alterado com sucesso!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							}
+						}
 					}
 
 				}

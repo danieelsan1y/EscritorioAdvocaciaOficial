@@ -58,7 +58,7 @@ public class TeladeCadastroCusto extends JFrame {
 		montarTela();
 		getContentPane().add(divisaoPrincipal);
 		setSize(800, 700);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
 	}
@@ -107,7 +107,7 @@ public class TeladeCadastroCusto extends JFrame {
 		nroCusto.setLayout(new BoxLayout(nroCusto, BoxLayout.X_AXIS));
 		nroCusto.add(Box.createHorizontalStrut(8));
 		nroCusto.add(new JLabel("Numero:          "));
-		bNroCusto= new JTextField(5);
+		bNroCusto = new JTextField(5);
 		bNroCusto.setMaximumSize(new Dimension(800, 20));
 		nroCusto.add(bNroCusto);
 		nroCusto.add(Box.createHorizontalStrut(5));
@@ -126,13 +126,13 @@ public class TeladeCadastroCusto extends JFrame {
 		JPanel desCusto = new JPanel();
 		desCusto.setLayout(new BoxLayout(desCusto, BoxLayout.X_AXIS));
 		desCusto.add(Box.createHorizontalStrut(8));
-		desCusto.add(new JLabel("Parecer:         "));
+		desCusto.add(new JLabel("Descrição:         "));
 		bDesCusto = new JTextField(5);
 		bDesCusto.setMaximumSize(new Dimension(800, 20));
 		desCusto.add(bDesCusto);
 		desCusto.add(Box.createHorizontalStrut(5));
 		caixas.add(desCusto);
-		
+
 		JPanel valorCusto = new JPanel();
 		valorCusto.setLayout(new BoxLayout(valorCusto, BoxLayout.X_AXIS));
 		valorCusto.add(Box.createHorizontalStrut(8));
@@ -165,16 +165,16 @@ public class TeladeCadastroCusto extends JFrame {
 		consulta.add(excluir);
 		divisaoEspecificacoes.add("West", consulta);
 		caixas.add(caixas.add(Box.createGlue()));
-		
+
 		JPanel consultaAudi = new JPanel();
 		consulta.add(consultar);
 		divisaoEspecificacoes.add("West", consulta);
 		caixas.add(caixas.add(Box.createGlue()));
 
 	}
-	public void resultadoConsulta (Custo custo) {
-		
-		
+
+	public void resultadoConsulta(Custo custo) {
+
 		JPanel rNroCusto = new JPanel();
 		rNroCusto.add(new JLabel("Numero: "));
 		rNroCusto.add(new JLabel(custo.getNroCusto()));
@@ -189,7 +189,7 @@ public class TeladeCadastroCusto extends JFrame {
 		rDesCusto.add(new JLabel("Descrição: "));
 		rDesCusto.add(new JLabel(custo.getDesCusto()));
 		caixas.add(rDesCusto);
-		
+
 		JPanel rValCusto = new JPanel();
 		rValCusto.add(new JLabel("Valor: "));
 		rValCusto.add(new JLabel(String.valueOf(custo.getValCusto())));
@@ -204,8 +204,6 @@ public class TeladeCadastroCusto extends JFrame {
 		caixas.add(new JLabel("      "));
 
 	}
-	
-	
 
 	public void acaoBotoes() {
 		ActionListenerTelaPrincipal albotoes = new ActionListenerTelaPrincipal();
@@ -219,40 +217,76 @@ public class TeladeCadastroCusto extends JFrame {
 
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+
 			if (e.getSource() == inserir) {
-				Processo pro = processoDao.buscar(bProcessoCusto.getText());
 				Custo custo = null;
-				try {
-					custo = new Custo(sdf.parse(bDataCusto.getText()), bDesCusto.getText(), Double.valueOf(bValCusto.getText()), pro, bNroCusto.getText());
-				} catch (NumberFormatException e1) {
-					e1.printStackTrace();
-				} catch (ParseException e1) {
-					e1.printStackTrace();
-				}  finally {
-					custoDao.inserir(custo);
-					JOptionPane.showMessageDialog(null, "Custo inserido com sucesso!", "",
-							JOptionPane.INFORMATION_MESSAGE);
+				if (bNroCusto.getText().isEmpty() && bDataCusto.getText().isEmpty() && bDesCusto.getText().isEmpty()
+						&& bValCusto.getText().isEmpty() && bProcessoCusto.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo(s) em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Processo pro = processoDao.buscar(bProcessoCusto.getText());
+					if (pro == null) {
+						JOptionPane.showMessageDialog(null, "Processo não encontrado!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						custo = custoDao.buscar(bNroCusto.getText());
+						if (custo == null) {
+							try {
+								custo = new Custo(sdf.parse(bDataCusto.getText()), bDesCusto.getText(),
+										Double.valueOf(bValCusto.getText()), pro, bNroCusto.getText());
+							} catch (NumberFormatException e1) {
+								e1.printStackTrace();
+							} catch (ParseException e1) {
+								e1.printStackTrace();
+							} finally {
+								custoDao.inserir(custo);
+								JOptionPane.showMessageDialog(null, "Custo inserido com sucesso!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Numero do Custo já existe!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+				}
+
+			}
+
+			if (e.getSource() == consultar) {
+				if (BExclusao.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Custo custo = custoDao.buscar(BExclusao.getText());
+					if(custo == null) {
+						JOptionPane.showMessageDialog(null, "Custo não encontrado!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						resultadoConsulta(custo);
+						JOptionPane.showMessageDialog(null, "Custo consultado com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 				
-				
-	
-			}
-			if (e.getSource() == consultar) {
-				Custo custo = custoDao.buscar(BExclusao.getText());
-				resultadoConsulta(custo);
-				JOptionPane.showMessageDialog(null, "Custo consultado com sucesso!", "",
-						JOptionPane.INFORMATION_MESSAGE);
 
 
 			}
 			if (e.getSource() == excluir) {
-				Custo custo = custoDao.buscar(BExclusao.getText());
-				custoDao.deletar(custo);
-				JOptionPane.showMessageDialog(null, "Custo excluido com sucesso!", "",
-						JOptionPane.INFORMATION_MESSAGE);
 				
+				if (BExclusao.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Custo custo = custoDao.buscar(BExclusao.getText());
+					if(custo == null) {
+						JOptionPane.showMessageDialog(null, "Custo não encontrado!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						custoDao.deletar(custo);
+						JOptionPane.showMessageDialog(null, "Custo excluido com sucesso!", "", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+				
+			
 
-				
 			}
 			if (e.getSource() == limpar) {
 				BExclusao.setText("");

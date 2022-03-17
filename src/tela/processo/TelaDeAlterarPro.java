@@ -25,6 +25,7 @@ import dao.model.VaraDao;
 import entities.PessoaFisica;
 import entities.PessoaJuridica;
 import entities.Processo;
+import entities.Vara;
 import entities.enums.SituacaoStatus;
 
 public class TelaDeAlterarPro extends JFrame {
@@ -194,50 +195,74 @@ public class TelaDeAlterarPro extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == consultar) {
-				Processo pro = processoDao.buscar(barraConsulta.getText());
-				bNroProcesso.setText(pro.getNroProcesso());
-				bDataAberturaPro.setText(sdf.format(pro.getDataAbertura()));
-				if (pro.getDataConclusao() != null) {
-					bDataConclusaoPro.setText(sdf.format(pro.getDataConclusao()));
-				}
-				bSituacao.setText(String.valueOf(pro.getSitucacao()));
+				if(barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Processo pro = processoDao.buscar(barraConsulta.getText());
+					if(pro == null) {
+						JOptionPane.showMessageDialog(null, "Processo não encontrado!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						bNroProcesso.setText(pro.getNroProcesso());
+						bDataAberturaPro.setText(sdf.format(pro.getDataAbertura()));
+						if (pro.getDataConclusao() != null) {
+							bDataConclusaoPro.setText(sdf.format(pro.getDataConclusao()));
+						}
+						bSituacao.setText(String.valueOf(pro.getSitucacao()));
 
-				bCpfAutor.setText(pro.getPessoaAutor().getNomePes());
-				bCpfReu.setText(pro.getPessoaReu().getNomePes());
-				bDesVara.setText(pro.getVara().getDesVara());
+						bCpfAutor.setText(pro.getPessoaAutor().getNomePes());
+						bCpfReu.setText(pro.getPessoaReu().getNomePes());
+						bDesVara.setText(pro.getVara().getDesVara());
+					}
+				}
+
+
 			}
 			if(e.getSource() == alterar) {
 				Processo pro = processoDao.buscar(barraConsulta.getText());
-				pro.setNroProcesso(bNroProcesso.getText());
-				pro.setSitucacao(SituacaoStatus.valueOf(bSituacao.getText()));
-				if(!(bCpfAutor.getText().equals(pro.getPessoaAutor().getNomePes()))) {
-					if(bCpfAutor.getText().length() == 11) {
-						PessoaFisica pes = pessoaFisicaDao.buscar(bCpfAutor.getText());
-						pro.setPessoaAutor(pes);
-					}else {
-						PessoaJuridica pes = pessoaJuridicaDao.buscar(bCpfAutor.getText());
-						pro.setPessoaAutor(pes);
-					}
-				}
-				if(!(bCpfReu.getText().equals(pro.getPessoaReu().getNomePes()))) {
-					if(bCpfReu.getText().length() == 11) {
-						PessoaFisica pes = pessoaFisicaDao.buscar(bCpfReu.getText());
-						pro.setPessoaReu(pes);
-					}else {
-						PessoaJuridica pes = pessoaJuridicaDao.buscar(bCpfReu.getText());
-						pro.setPessoaReu(pes);
-					}
-				}
-				try {
-					pro.setDataAbertura(sdf.parse(bDataAberturaPro.getText()));
-					pro.setDataConclusao(sdf.parse(bDataConclusaoPro.getText()));
-				} catch (ParseException e1) {
-					e1.printStackTrace();
-				} finally {
-					processoDao.atualizar(pro);
-					JOptionPane.showMessageDialog(null, "processo alterado com sucesso!", "",
+				Vara vara = varaDao.buscar(bDesVara.getText());
+				if(bNroProcesso.getText().isEmpty() || bSituacao.getText().isEmpty() || 
+						bCpfAutor.getText().isEmpty() || bCpfReu.getText().isEmpty() || 
+						bDataConclusaoPro.getText().isEmpty() || bDataAberturaPro.getText().isEmpty() ||
+						bDesVara.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo(s) em branco!", "",
 							JOptionPane.INFORMATION_MESSAGE);
+
+				} else  {
+					pro.setNroProcesso(bNroProcesso.getText());
+					pro.setSitucacao(SituacaoStatus.valueOf(bSituacao.getText()));
+					pro.setVara(vara);
+					if(!(bCpfAutor.getText().equals(pro.getPessoaAutor().getNomePes()))) {
+						if(bCpfAutor.getText().length() == 11) {
+							PessoaFisica pes = pessoaFisicaDao.buscar(bCpfAutor.getText());
+							pro.setPessoaAutor(pes);
+						}else {
+							PessoaJuridica pes = pessoaJuridicaDao.buscar(bCpfAutor.getText());
+							pro.setPessoaAutor(pes);
+						}
+					}
+					if(!(bCpfReu.getText().equals(pro.getPessoaReu().getNomePes()))) {
+						if(bCpfReu.getText().length() == 11) {
+							PessoaFisica pes = pessoaFisicaDao.buscar(bCpfReu.getText());
+							pro.setPessoaReu(pes);
+						}else {
+							PessoaJuridica pes = pessoaJuridicaDao.buscar(bCpfReu.getText());
+							pro.setPessoaReu(pes);
+						}
+					}
+					try {
+						pro.setDataAbertura(sdf.parse(bDataAberturaPro.getText()));
+						pro.setDataConclusao(sdf.parse(bDataConclusaoPro.getText()));
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					} finally {
+						processoDao.atualizar(pro);
+						JOptionPane.showMessageDialog(null, "processo alterado com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
+
 				
 			}
 

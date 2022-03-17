@@ -49,7 +49,7 @@ public class TelaDeAlterarPes extends JFrame {
 		montarTela();
 		getContentPane().add(divisaoPrincipal);
 		setSize(800, 700);
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
 	}
@@ -241,37 +241,58 @@ public class TelaDeAlterarPes extends JFrame {
 			PessoaFisica pes;
 			PessoaJuridica pesJu;
 			if (e.getSource() == consultar) {
+				if (barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+
+				}
 				int tamanho = barraConsulta.getText().length();
-				if(tamanho == 11) {
-					 pes = pessoaFisicaDao.buscar(barraConsulta.getText());
-					bNomePessoa.setText(pes.getNomePes());
-					bEndereco.setText(pes.getEndPes());
-					bCpfPessoa.setText(pes.getCpfPes());
-					bRgPessoa.setText(pes.getCpfPes());
-					bTelPessoa.setText(pes.getTelPes());
-					bCepPessoa.setText(pes.getCepPes());
-					bEmailPessoa.setText(pes.getEmailPes());
-					bBairroPessoa.setText(pes.getBaiPes());
-					bCidadePessoa.setText(pes.getCidPes());
-					bUfPessoa.setText(pes.getUfPes());
-					
+				if (tamanho == 11) {
+					pes = pessoaFisicaDao.buscar(barraConsulta.getText());
+					if (pes == null) {
+						JOptionPane.showMessageDialog(null, "Pessoa não encontrada!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						bNomePessoa.setText(pes.getNomePes());
+						bEndereco.setText(pes.getEndPes());
+						bCpfPessoa.setText(pes.getCpfPes());
+						bRgPessoa.setText(pes.getRgPes());
+						bTelPessoa.setText(pes.getTelPes());
+						bCepPessoa.setText(pes.getCepPes());
+						bEmailPessoa.setText(pes.getEmailPes());
+						bBairroPessoa.setText(pes.getBaiPes());
+						bCidadePessoa.setText(pes.getCidPes());
+						bUfPessoa.setText(pes.getUfPes());
+					}
+
+				} else {
+					if (tamanho == 14) {
+						pesJu = pessoaJuridicaDao.buscar(barraConsulta.getText());
+						if (pesJu == null) {
+							JOptionPane.showMessageDialog(null, "Pessoa não encontrada!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							bNomePessoa.setText(pesJu.getNomePes());
+							bEndereco.setText(pesJu.getEndPes());
+							bCnpjPes.setText(pesJu.getCpnjPes());
+							bTelPessoa.setText(pesJu.getTelPes());
+							bCepPessoa.setText(pesJu.getCepPes());
+							bEmailPessoa.setText(pesJu.getEmailPes());
+							bBairroPessoa.setText(pesJu.getBaiPes());
+							bCidadePessoa.setText(pesJu.getCidPes());
+							bUfPessoa.setText(pesJu.getUfPes());
+						}
+
+					} else {
+						JOptionPane.showMessageDialog(null, "Tamanho inválido!", "", JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
-				if(tamanho == 14) {
-					pesJu = pessoaJuridicaDao.buscar(barraConsulta.getText());
-					bNomePessoa.setText(pesJu.getNomePes());
-					bEndereco.setText(pesJu.getEndPes());
-					bCpfPessoa.setText(pesJu.getCpnjPes());
-					bTelPessoa.setText(pesJu.getTelPes());
-					bCepPessoa.setText(pesJu.getCepPes());
-					bEmailPessoa.setText(pesJu.getEmailPes());
-					bBairroPessoa.setText(pesJu.getBaiPes());
-					bCidadePessoa.setText(pesJu.getCidPes());
-					bUfPessoa.setText(pesJu.getUfPes());
-				}
-			
+
 			}
 
-			if (e.getSource() == limpar) {
+			if (e.getSource() == limpar)
+
+			{
 				bNomePessoa.setText("");
 				barraConsulta.setText("");
 				bCpfPessoa.setText("");
@@ -285,39 +306,76 @@ public class TelaDeAlterarPes extends JFrame {
 				bCidadePessoa.setText("");
 				bUfPessoa.setText("");
 			}
-			if(e.getSource() == alterar) {
-				int tamanho =0;
-				tamanho = barraConsulta.getText().length();
-				
-				if(tamanho == 11) {
-					pes = pessoaFisicaDao.buscar(barraConsulta.getText());
-					pes.setNomePes(bNomePessoa.getText());
-					pes.setEndPes(bEndereco.getText());
-					pes.setCpfPes(bCpfPessoa.getText());
-					pes.setRgPes(bRgPessoa.getText());
-					pes.setCepPes(bCepPessoa.getText());
-					pes.setEmailPes(bEmailPessoa.getText());
-					pes.setBaiPes(bBairroPessoa.getText());
-					pes.setCidPes(bCidadePessoa.getText());
-					pes.setUfPes(bUfPessoa.getText());
-					pes.setEmailPes(bEmailPessoa.getText());
-					pes.setNomePes(bNomePessoa.getText());
-					pessoaFisicaDao.atualizar(pes);
-					
+			if (e.getSource() == alterar) {
+				int tamanho = 0;
+				if (barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
 				}
-				if(tamanho == 14) {
-					pesJu = pessoaJuridicaDao.buscar(barraConsulta.getText());
-					pesJu.setNomePes(bNomePessoa.getText());
-					pesJu.setEndPes(bEndereco.getText());
-					pesJu.setCpnjPes(bCnpjPes.getText());
-					pesJu.setCepPes(bCepPessoa.getText());
-					pesJu.setEmailPes(bEmailPessoa.getText());
-					pesJu.setBaiPes(bBairroPessoa.getText());
-					pesJu.setCidPes(bCidadePessoa.getText());
-					pesJu.setUfPes(bUfPessoa.getText());
-					pesJu.setEmailPes(bEmailPessoa.getText());
-					pesJu.setNomePes(bNomePessoa.getText());
-					pessoaJuridicaDao.atualizar(pesJu);
+				tamanho = barraConsulta.getText().length();
+
+				if (tamanho == 11) {
+					pes = pessoaFisicaDao.buscar(barraConsulta.getText());
+					if (pes == null) {
+
+					} else {
+						if (bNomePessoa.getText().isEmpty() || bEndereco.getText().isEmpty()
+								|| bCpfPessoa.getText().isEmpty() || bRgPessoa.getText().isEmpty()
+
+								|| bCpfPessoa.getText().isEmpty() || bRgPessoa.getText().isEmpty()|| bCepPessoa.getText().isEmpty()
+								|| bEmailPessoa.getText().isEmpty() || bBairroPessoa.getText().isEmpty()
+								|| bCidadePessoa.getText().isEmpty() || bUfPessoa.getText().isEmpty()
+								|| bEmailPessoa.getText().isEmpty() || bNomePessoa.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "2-Campo(s) em branco!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							pes.setNomePes(bNomePessoa.getText());
+							pes.setEndPes(bEndereco.getText());
+							pes.setCpfPes(bCpfPessoa.getText());
+							pes.setRgPes(bRgPessoa.getText());
+							pes.setCepPes(bCepPessoa.getText());
+							pes.setEmailPes(bEmailPessoa.getText());
+							pes.setBaiPes(bBairroPessoa.getText());
+							pes.setCidPes(bCidadePessoa.getText());
+							pes.setUfPes(bUfPessoa.getText());
+							pes.setEmailPes(bEmailPessoa.getText());
+							pes.setNomePes(bNomePessoa.getText());
+							pessoaFisicaDao.atualizar(pes);
+							JOptionPane.showMessageDialog(null, "Pessoa alterada com sucesso!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+
+				} else {
+					if (tamanho == 14) {
+						pesJu = pessoaJuridicaDao.buscar(barraConsulta.getText());
+						if (pesJu == null) {
+						} else {
+							if (bNomePessoa.getText().isEmpty() || bEndereco.getText().isEmpty()
+									|| bCnpjPes.getText().isEmpty() || bCepPessoa.getText().isEmpty()
+									|| bEmailPessoa.getText().isEmpty() || bBairroPessoa.getText().isEmpty()
+									|| bCidadePessoa.getText().isEmpty() || bUfPessoa.getText().isEmpty()
+									|| bEmailPessoa.getText().isEmpty() || bNomePessoa.getText().isEmpty()) {
+								JOptionPane.showMessageDialog(null, "1-Campo(s) em branco!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							} else {
+								pesJu.setNomePes(bNomePessoa.getText());
+								pesJu.setEndPes(bEndereco.getText());
+								pesJu.setCpnjPes(bCnpjPes.getText());
+								pesJu.setCepPes(bCepPessoa.getText());
+								pesJu.setEmailPes(bEmailPessoa.getText());
+								pesJu.setBaiPes(bBairroPessoa.getText());
+								pesJu.setCidPes(bCidadePessoa.getText());
+								pesJu.setUfPes(bUfPessoa.getText());
+								pesJu.setEmailPes(bEmailPessoa.getText());
+								pesJu.setNomePes(bNomePessoa.getText());
+								pessoaJuridicaDao.atualizar(pesJu);
+
+							}
+						}
+
+					} else {
+						JOptionPane.showMessageDialog(null, "Tamanho inválido!", "", JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 			}
 		}

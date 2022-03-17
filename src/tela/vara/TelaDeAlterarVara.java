@@ -86,9 +86,7 @@ public class TelaDeAlterarVara extends JFrame {
 
 	}
 
-
 	public void inserirCampos() {
-		
 
 		textoCadastro.add(new JLabel("Consultar Vara"));
 		JPanel consulta = new JPanel();
@@ -103,7 +101,7 @@ public class TelaDeAlterarVara extends JFrame {
 		caixas.add(new JLabel(" "));
 		caixas.add(new JLabel("Escreva as alterações"));
 		caixas.add(new JLabel(" "));
-	
+
 		JPanel desVara = new JPanel();
 		desVara.setLayout(new BoxLayout(desVara, BoxLayout.X_AXIS));
 		desVara.add(Box.createHorizontalStrut(8));
@@ -113,7 +111,7 @@ public class TelaDeAlterarVara extends JFrame {
 		desVara.add(bDesVara);
 		desVara.add(Box.createHorizontalStrut(5));
 		caixas.add(desVara);
-		
+
 		JPanel desTribunal = new JPanel();
 		desTribunal.setLayout(new BoxLayout(desTribunal, BoxLayout.X_AXIS));
 		desTribunal.add(Box.createHorizontalStrut(8));
@@ -136,21 +134,26 @@ public class TelaDeAlterarVara extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == consultar) {
+				Tribunal trib;
 				Vara vara = varaDao.buscar(barraConsulta.getText());
-				if(barraConsulta.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "Campo em branco!", "",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
-				else {
-					bDesVara.setText(vara.getDesVara());
-					bDesTribunal.setText(vara.getTribunal().getDesTrib());
-					JOptionPane.showMessageDialog(null, "Vara consultada com sucesso!", "",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
+				if (barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					if (vara == null) {
+						JOptionPane.showMessageDialog(null, "Vara não foi encontrada!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						if (!(vara.getDesVara().equals(null))) {
+							bDesVara.setText(vara.getDesVara());
+							bDesTribunal.setText(vara.getTribunal().getDesTrib());
+						}
 
-
+					}
+				}
 			}
-			if (e.getSource() == limpar) {
+			if (e.getSource() == limpar)
+
+			{
 				bDesVara.setText("");
 				bDesTribunal.setText("");
 				barraConsulta.setText("");
@@ -158,20 +161,37 @@ public class TelaDeAlterarVara extends JFrame {
 			}
 
 			if (e.getSource() == alterar) {
-				Vara vara = varaDao.buscar(barraConsulta.getText());
-				vara.setDesVara(bDesVara.getText());
-				Tribunal trib = tribunalDao.buscar(bDesTribunal.getText());
-				vara.setTribunal(trib);
-				varaDao.atualizar(vara);
-				
+				if (barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
 
-				JOptionPane.showMessageDialog(null, "Vara alterada com sucesso!", "",
-						JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Vara vara = varaDao.buscar(barraConsulta.getText());
+					if (vara == null) {
+						JOptionPane.showMessageDialog(null, "Vara não foi encontrada!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						if (bDesVara.getText().isEmpty() || bDesTribunal.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Campos em branco!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							Tribunal trib = tribunalDao.buscar(bDesTribunal.getText());
+							if (trib == null) {
+								JOptionPane.showMessageDialog(null, "Tribunal não foi encontrado!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							} else {
+								vara.setDesVara(bDesVara.getText());
+								vara.setTribunal(trib);
+								varaDao.atualizar(vara);
+								JOptionPane.showMessageDialog(null, "Vara alterada com sucesso!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							}
 
-				
+						}
+					}
+				}
 			}
-		}
 
+		}
 	}
 
 }

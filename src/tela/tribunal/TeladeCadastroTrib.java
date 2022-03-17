@@ -19,7 +19,7 @@ import dao.model.DaoFactory;
 import dao.model.TribunalDao;
 import entities.Tribunal;
 
-class TelaDeAlterarTrib extends JFrame {
+public class TeladeCadastroTrib extends JFrame {
 	// atributos
 
 	TribunalDao tribunalDao = DaoFactory.criarTribunal();
@@ -40,15 +40,16 @@ class TelaDeAlterarTrib extends JFrame {
 
 	JButton inserir = new JButton("INSERIR"), consultar = new JButton("CONSULTAR"), alterar = new JButton("ALTERAR"),
 			excluir = new JButton("EXCLUIR"), limpar = new JButton("LIMPAR"),
-			cadastrados = new JButton("VARAS E PROCESSOS");
+			cadastrados = new JButton("CONSULTA DO TRIBUNAL, VARAS E PROCESSOS");
 
-	JTextField bDesTribunal, bEndTribunal, barraConsulta;
+	JTextField bDesTribunal, bEndTribunal, BExclusao;
 
-	public TelaDeAlterarTrib() {
+	public TeladeCadastroTrib() {
 		super("Cadastro Tribunal");
 		montarTela();
 		getContentPane().add(divisaoPrincipal);
-		setSize(600, 500);
+		setSize(800, 700);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
 	}
@@ -56,6 +57,7 @@ class TelaDeAlterarTrib extends JFrame {
 	public void montarTela() {
 		definirLayouts();
 		adicionarNasDivisoes();
+		inserirBotoes();
 		inserirCampos();
 		acaoBotoes();
 
@@ -83,24 +85,16 @@ class TelaDeAlterarTrib extends JFrame {
 
 	}
 
+	public void inserirBotoes() {
+		botoes.add(alterar);
+		botoes.add(limpar);
+		botoes.add(cadastrados);
+
+	}
 
 	public void inserirCampos() {
-		
 
-		textoCadastro.add(new JLabel("ConsultarTribunal"));
-		JPanel consulta = new JPanel();
-		consulta.add(new JLabel("Digite o nome do Tribunal:   "));
-		barraConsulta = new JTextField(14);
-		consulta.add(barraConsulta);
-		consulta.add(consultar);
-		caixas.add(consulta);
-		caixas.add(new JLabel(" "));
-		caixas.add(new JLabel(" "));
-		caixas.add(new JLabel(" "));
-		caixas.add(new JLabel(" "));
-		caixas.add(new JLabel("Escreva as alterações"));
-		caixas.add(new JLabel(" "));
-	
+		textoCadastro.add(new JLabel("Cadastrar Tribunal"));
 		JPanel desTribunal = new JPanel();
 		desTribunal.setLayout(new BoxLayout(desTribunal, BoxLayout.X_AXIS));
 		desTribunal.add(Box.createHorizontalStrut(8));
@@ -120,67 +114,88 @@ class TelaDeAlterarTrib extends JFrame {
 		endTribunal.add(bEndTribunal);
 		endTribunal.add(Box.createHorizontalStrut(5));
 		caixas.add(endTribunal);
-		caixas.add(alterar);
+		caixas.add(inserir);
+		caixas.add(new JLabel("      "));
+		caixas.add(new JLabel("      "));
+		caixas.add(new JLabel("      "));
+		caixas.add(new JLabel("Excluir tribunal"));
+
+		JPanel consulta = new JPanel();
+		consulta.add(new JLabel("Digite o nome do tribunal:  "));
+		BExclusao = new JTextField(14);
+		consulta.add(BExclusao);
+		consulta.add(excluir);
+		divisaoEspecificacoes.add("West", consulta);
+		caixas.add(caixas.add(Box.createGlue()));
 
 	}
 
 	public void acaoBotoes() {
 		ActionListenerTelaPrincipal albotoes = new ActionListenerTelaPrincipal();
+		inserir.addActionListener(albotoes);
 		consultar.addActionListener(albotoes);
+		excluir.addActionListener(albotoes);
+		limpar.addActionListener(albotoes);
+		cadastrados.addActionListener(albotoes);
 		alterar.addActionListener(albotoes);
 	}
 
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			if (e.getSource() == consultar) {
-				if(barraConsulta.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "Campo em branco!", "",
+			if (e.getSource() == inserir) {
+				if (bDesTribunal.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo(s) em branco!", "",
 							JOptionPane.INFORMATION_MESSAGE);
 				} else {
-					Tribunal trib = tribunalDao.buscar(barraConsulta.getText());
+					Tribunal trib = tribunalDao.buscar(bDesTribunal.getText());
+
+					if (trib == null) {
+						trib = new Tribunal(bDesTribunal.getText(), bEndTribunal.getText());
+						tribunalDao.inserir(trib);
+						JOptionPane.showMessageDialog(null, "Tribunal inserido com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null, "Tribunal já cadastrado!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+
+				}
+			}
+			if (e.getSource() == consultar) {
+				// TeladeConsulta telaCadastrados = new TeladeConsulta();
+			}
+			if (e.getSource() == excluir) {
+				if(BExclusao.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo(s) em branco!", "",
+							JOptionPane.INFORMATION_MESSAGE);
+					
+				} else {
+					Tribunal trib = tribunalDao.buscar(BExclusao.getText());
 					if(trib == null) {
 						JOptionPane.showMessageDialog(null, "Tribunal não encontrado!", "",
 								JOptionPane.INFORMATION_MESSAGE);
 					} else {
-						bEndTribunal.setText(trib.getEndTrib());
-						bDesTribunal.setText(trib.getDesTrib());
-						JOptionPane.showMessageDialog(null, "Tribunal consultado com sucesso!", "",
+						tribunalDao.deletar(trib);
+						JOptionPane.showMessageDialog(null, "Tribunal excluido com sucesso!", "",
 								JOptionPane.INFORMATION_MESSAGE);
 					}
+					
+
 				}
-				
 
 
 			}
 			if (e.getSource() == limpar) {
 				bEndTribunal.setText("");
 				bDesTribunal.setText("");
-				barraConsulta.setText("");
+				BExclusao.setText("");
 
 			}
-
+			if (e.getSource() == cadastrados) {
+				TelaDeListarTrib tela = new TelaDeListarTrib();
+			}
 			if (e.getSource() == alterar) {
-				
-				if(bDesTribunal.getText().isEmpty() || bEndTribunal.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "Campo(s) em branco!", "",
-							JOptionPane.INFORMATION_MESSAGE);
-				} else {
-					Tribunal trib = tribunalDao.buscar(barraConsulta.getText());
-						if(trib == null) {
-							JOptionPane.showMessageDialog(null, "Tribunal não encontrado!", "",
-									JOptionPane.INFORMATION_MESSAGE);
-						}
-						else {
-							trib.setDesTrib(bDesTribunal.getText());
-							trib.setEndTrib(bEndTribunal.getText());
-							tribunalDao.atualizar(trib);
-							JOptionPane.showMessageDialog(null, "Tribunal alterado com sucesso!", "",
-									JOptionPane.INFORMATION_MESSAGE);
-						}
-				}
-
-
-				
+				TelaDeAlterarTrib tela = new TelaDeAlterarTrib();
 			}
 		}
 

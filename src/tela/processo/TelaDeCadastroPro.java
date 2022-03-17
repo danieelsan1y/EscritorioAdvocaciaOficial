@@ -29,7 +29,7 @@ import entities.Tribunal;
 import entities.Vara;
 import entities.enums.SituacaoStatus;
 
-class TelaDeCadastroPro extends JFrame {
+public class TelaDeCadastroPro extends JFrame {
 	// atributos
 
 	PessoaFisicaDao pessoaFisicaDao = DaoFactory.criarPessoaFisica();
@@ -63,7 +63,7 @@ class TelaDeCadastroPro extends JFrame {
 		montarTela();
 		getContentPane().add(divisaoPrincipal);
 		setSize(800, 700);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
 	}
@@ -205,18 +205,16 @@ class TelaDeCadastroPro extends JFrame {
 
 				if (!(bNroProcesso.getText().isEmpty() && bCpfAutor.getText().isEmpty() && bCpfReu.getText().isEmpty()
 						&& bDesVara.getText().isEmpty())) {
-
+						
 					if (tamAutor == 14) {
 						pesAutor = pessoaJuridicaDao.buscar(bCpfAutor.getText());
 
 					}
 					if (tamAutor == 11) {
 						pesAutor = pessoaFisicaDao.buscar(bCpfAutor.getText());
-						System.out.println("passei 1");
 					}
 					if (tamReu == 14) {
 						pesReu = pessoaJuridicaDao.buscar(bCpfReu.getText());
-						System.out.println("passei 2");
 
 					}
 					if (tamReu == 11) {
@@ -230,19 +228,33 @@ class TelaDeCadastroPro extends JFrame {
 					} catch (ParseException e1) {
 						e1.printStackTrace();
 					} finally {
-						JOptionPane.showMessageDialog(null, "Processo excluido com sucesso!", "",
+						JOptionPane.showMessageDialog(null, "Processo inserido com sucesso!", "",
 								JOptionPane.INFORMATION_MESSAGE);
 					}
 
+				} else {
+					JOptionPane.showMessageDialog(null, "Campo(s) em branco!", "",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 
 			}
 
 			if (e.getSource() == excluir) {
-				Processo pro = processoDao.buscar(BExclusao.getText());
-				processoDao.deletar(pro);
-				JOptionPane.showMessageDialog(null, "Processo excluido com sucesso!", "",
-						JOptionPane.INFORMATION_MESSAGE);
+				if(BExclusao.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Processo pro = processoDao.buscar(BExclusao.getText());
+					if(pro == null) {
+						JOptionPane.showMessageDialog(null, "Processo não encontrado!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						processoDao.deletar(pro);
+						JOptionPane.showMessageDialog(null, "Processo excluido com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+
 
 			}
 			if (e.getSource() == limpar)

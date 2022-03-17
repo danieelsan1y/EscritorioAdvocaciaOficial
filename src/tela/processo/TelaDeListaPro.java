@@ -12,6 +12,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -172,13 +173,26 @@ class TelaDeListaPro extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == consultar) {
-			
-				Processo pro = processoDao.buscar(barraConsulta.getText());
-				ResultadoProcessos(pro);
+				if(barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "",
+							JOptionPane.INFORMATION_MESSAGE);
+					
+				}else {
+					Processo pro = processoDao.buscar(barraConsulta.getText());
+					if(pro == null) {
+						JOptionPane.showMessageDialog(null, "Processo não encontrado!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+						
+					} else {
+						ResultadoProcessos(pro);
+						ThreadAudiencia t01 = new ThreadAudiencia("Thread01", pro.getNroProcesso());
+						t01.setPriority(Thread.NORM_PRIORITY - 1);
+						t01.start();
+					}
+				}
 				
-				ThreadAudiencia t01 = new ThreadAudiencia("Thread01", pro.getNroProcesso());
-				t01.setPriority(Thread.NORM_PRIORITY - 1);
-				t01.start();
+
+
 		
 			}
 			if (e.getSource() == sair) {

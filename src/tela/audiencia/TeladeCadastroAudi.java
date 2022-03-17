@@ -57,7 +57,7 @@ public class TeladeCadastroAudi extends JFrame {
 		montarTela();
 		getContentPane().add(divisaoPrincipal);
 		setSize(800, 700);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
 	}
@@ -154,16 +154,16 @@ public class TeladeCadastroAudi extends JFrame {
 		consulta.add(excluir);
 		divisaoEspecificacoes.add("West", consulta);
 		caixas.add(caixas.add(Box.createGlue()));
-		
+
 		JPanel consultaAudi = new JPanel();
 		consulta.add(consultar);
 		divisaoEspecificacoes.add("West", consulta);
 		caixas.add(caixas.add(Box.createGlue()));
 
 	}
-	public void resultadoConsulta (Audiencia audi) {
-		
-		
+
+	public void resultadoConsulta(Audiencia audi) {
+
 		JPanel rNroAudi = new JPanel();
 		rNroAudi.add(new JLabel("Numero Audiencia: "));
 		rNroAudi.add(new JLabel(audi.getNroAudi()));
@@ -188,8 +188,6 @@ public class TeladeCadastroAudi extends JFrame {
 		caixas.add(new JLabel("      "));
 
 	}
-	
-	
 
 	public void acaoBotoes() {
 		ActionListenerTelaPrincipal albotoes = new ActionListenerTelaPrincipal();
@@ -204,36 +202,71 @@ public class TeladeCadastroAudi extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == inserir) {
-				if(bProcessoAudi.getText().isEmpty() && bNroAudi.getText().isEmpty()) {
-					
-				}else {
+				if (bProcessoAudi.getText().isEmpty() && bNroAudi.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo(s) em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
 					Processo pro = processoDao.buscar(bProcessoAudi.getText());
-					try {
-						Audiencia audi = new Audiencia(sdf.parse(bDataAudi.getText()), bParecerAudi.getText(), 
-								pro, bNroAudi.getText());
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-					} finally {
-						JOptionPane.showMessageDialog(null, "Audiencia adicionada com sucesso!", "",
+					Audiencia audi = audienciaDao.buscar(bNroAudi.getText());
+					if (pro == null) {
+						JOptionPane.showMessageDialog(null, "Processo não encontrado!", "",
 								JOptionPane.INFORMATION_MESSAGE);
+
+					} else {
+						if (audi == null) {
+							try {
+								audi = new Audiencia(sdf.parse(bDataAudi.getText()), bParecerAudi.getText(), pro,
+										bNroAudi.getText());
+							} catch (ParseException e1) {
+								e1.printStackTrace();
+							} finally {
+								JOptionPane.showMessageDialog(null, "Audiencia adicionada com sucesso!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+								audi.setProcesso(pro);
+								audienciaDao.inserir(audi);
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Numero da audiencia já existe!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
+
 				}
-	
+
 			}
 			if (e.getSource() == consultar) {
 
-				Audiencia audi = audienciaDao.buscar(BExclusao.getText());
-				resultadoConsulta(audi);
-				JOptionPane.showMessageDialog(null, "Audiencia consultada com sucesso!", "",
-						JOptionPane.INFORMATION_MESSAGE);
+				if (BExclusao.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Audiencia audi = audienciaDao.buscar(BExclusao.getText());
+					if (audi == null) {
+						JOptionPane.showMessageDialog(null, "Audiencia não encontrada!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						resultadoConsulta(audi);
+						JOptionPane.showMessageDialog(null, "Audiencia consultada com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
 
 			}
 			if (e.getSource() == excluir) {
-				Audiencia audi = audienciaDao.buscar(BExclusao.getText());
-				audienciaDao.deletar(audi);
-				JOptionPane.showMessageDialog(null, "Audiencia excluida com sucesso!", "",
-						JOptionPane.INFORMATION_MESSAGE);
-				
+
+				if (BExclusao.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Audiencia audi = audienciaDao.buscar(BExclusao.getText());
+					if (audi == null) {
+						JOptionPane.showMessageDialog(null, "Audiencia não encontrada!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						audienciaDao.deletar(audi);
+						JOptionPane.showMessageDialog(null, "Audiencia excluida com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+		
+					}
+				}
+
 			}
 			if (e.getSource() == limpar) {
 				bDataAudi.setText("");

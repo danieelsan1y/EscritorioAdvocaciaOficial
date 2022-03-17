@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import dao.model.AudienciaDao;
@@ -143,8 +144,25 @@ public class AudienciaDaoJDBC implements AudienciaDao {
 
 	@Override
 	public List<Audiencia> listar() {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		ArrayList<Audiencia> list = new ArrayList<Audiencia>();
+		try {
+			st = conn.prepareStatement("SELECT * FROM audiencia ");
+			rs = st.executeQuery();
+
+			while (rs.next()) {
+				Audiencia obj =  buscar("nroAudi");
+				list.add(obj);
+			}
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+		return list;
 	}
 
 }

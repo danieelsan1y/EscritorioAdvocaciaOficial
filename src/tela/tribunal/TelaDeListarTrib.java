@@ -12,6 +12,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -169,16 +170,29 @@ class TelaDeListarTrib extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == consultar) {
+				if(barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Tribunal obj= tribunalDao.buscar(barraConsulta.getText());
+					if(obj == null) {
+						JOptionPane.showMessageDialog(null, "Tribunal não foi encontrado!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						ResultadoProcessos(obj);
+						JOptionPane.showMessageDialog(null, "Tribunal consultado com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
 			
-				Tribunal obj= tribunalDao.buscar(barraConsulta.getText());
-				ResultadoProcessos(obj);
+
+		
 				
 
 				
 		
 			}
 			if (e.getSource() == sair) {
-				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 			}
 		}

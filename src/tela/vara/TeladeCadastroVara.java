@@ -52,7 +52,7 @@ public class TeladeCadastroVara extends JFrame {
 		montarTela();
 		getContentPane().add(divisaoPrincipal);
 		setSize(800, 700);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
 	}
@@ -147,7 +147,7 @@ public class TeladeCadastroVara extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == inserir) {
 				if (bDesTribunal.getText().isEmpty() && bDesVara.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "Campos em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Campos obrigatórios em  branco!", "", JOptionPane.INFORMATION_MESSAGE);
 				} else {
 					Tribunal trib = tribunalDao.buscar(bDesTribunal.getText());
 					Vara vara = new Vara(bDesVara.getText(), trib);
@@ -158,16 +158,24 @@ public class TeladeCadastroVara extends JFrame {
 				}
 
 			}
-		
+
 			if (e.getSource() == excluir) {
 				if (BExclusao.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
 
 				} else {
 					Vara vara = varaDao.buscar(BExclusao.getText());
-					varaDao.deletar(vara);
-					JOptionPane.showMessageDialog(null, "Vara excluida com sucesso!", "",
-							JOptionPane.INFORMATION_MESSAGE);
+					if (vara == null) {
+						JOptionPane.showMessageDialog(null, "Vara não foi encontrada!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+
+					} else {
+
+						varaDao.deletar(vara);
+						JOptionPane.showMessageDialog(null, "Vara excluida com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+
 				}
 			}
 			if (e.getSource() == limpar)

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import dao.model.AudienciaDao;
@@ -18,6 +19,7 @@ import db.DB;
 import db.DbException;
 import entities.Audiencia;
 import entities.Custo;
+import entities.Pessoa;
 import entities.PessoaFisica;
 import entities.PessoaJuridica;
 import entities.Processo;
@@ -260,8 +262,25 @@ public class ProcessoDaoJDBC implements ProcessoDao {
 
 	@Override
 	public List<Processo> listar() {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		ArrayList<Processo> list = new ArrayList<Processo>();
+		try {
+			st = conn.prepareStatement("SELECT * FROM processo ");
+			rs = st.executeQuery();
+
+			while (rs.next()) {
+				Processo obj =  buscar("nroProcesso");
+				list.add(obj);
+			}
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+		return list;
 	}
 
 	@Override

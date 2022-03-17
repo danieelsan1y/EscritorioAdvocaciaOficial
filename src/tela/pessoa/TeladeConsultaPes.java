@@ -146,7 +146,7 @@ public class TeladeConsultaPes extends JFrame {
 
 	}
 
-	public void ResultadoPJ (PessoaJuridica obj) {
+	public void ResultadoPJ(PessoaJuridica obj) {
 		// Resultado nome
 		JPanel nomePessoa = new JPanel();
 		nomePessoa.add(new JLabel("Nome: "));
@@ -158,7 +158,6 @@ public class TeladeConsultaPes extends JFrame {
 		cnpjPessoa.add(new JLabel("CNPJ: "));
 		cnpjPessoa.add(new JLabel(obj.getCpnjPes()));
 		atributosConsultados.add(cnpjPessoa);
-
 
 		// Resultado telefone
 		JPanel telefonePessoa = new JPanel();
@@ -202,9 +201,9 @@ public class TeladeConsultaPes extends JFrame {
 		ufPessoa.add(new JLabel(obj.getUfPes()));
 		atributosConsultados.add(ufPessoa);
 		sairTela.add(sair);
-		
+
 	}
-	
+
 	public void acaoBotoes() {
 		ActionListenerTelaPrincipal albotoes = new ActionListenerTelaPrincipal();
 		consultar.addActionListener(albotoes);
@@ -215,25 +214,42 @@ public class TeladeConsultaPes extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == consultar) {
 				int tamanho = 0;
+				if (barraConsulta.getText().isEmpty()) {
 
-				tamanho = barraConsulta.getText().length();
+				} else {
+					tamanho = barraConsulta.getText().length();
+				}
+
 				if (tamanho == 11) {
 					PessoaFisica pes = pessoaFisicaDao.buscar(barraConsulta.getText());
-					ResultadoPF(pes);
-					JOptionPane.showMessageDialog(null, "Pessoa consultada com sucesso!", "",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
-				if (tamanho == 14) {
-					PessoaJuridica pes = pessoaJuridicaDao.buscar(barraConsulta.getText());
-					ResultadoPJ(pes);
-					JOptionPane.showMessageDialog(null, "Pessoa consultada com sucesso!", "",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
+					if (pes == null) {
+						JOptionPane.showMessageDialog(null, "Pessoa não encontrada!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						ResultadoPF(pes);
+						JOptionPane.showMessageDialog(null, "Pessoa consultada com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				} else {
+					if (tamanho == 14) {
+						PessoaJuridica pes = pessoaJuridicaDao.buscar(barraConsulta.getText());
+						if (pes == null) {
+							JOptionPane.showMessageDialog(null, "Pessoa não encontrada!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							ResultadoPJ(pes);
+							JOptionPane.showMessageDialog(null, "Pessoa consultada com sucesso!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
 
+					} else {
+						JOptionPane.showMessageDialog(null, "Tamanho inválido!", "", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
 			}
-			if(e.getSource() == sair) {
+			if (e.getSource() == sair) {
 				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				
+
 			}
 		}
 	}

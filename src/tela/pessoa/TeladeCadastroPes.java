@@ -14,6 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.plaf.synth.ColorType;
+import java.awt.Color;
 
 import dao.model.DaoFactory;
 import dao.model.PessoaFisicaDao;
@@ -52,7 +56,7 @@ public class TeladeCadastroPes extends JFrame {
 		montarTela();
 		getContentPane().add(divisaoPrincipal);
 		setSize(800, 700);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
 	}
@@ -77,6 +81,7 @@ public class TeladeCadastroPes extends JFrame {
 
 	public void adicionarNasDivisoes() {
 		add("Center", divisaoPrincipal);
+		
 		divisaoPrincipal.add("North", imageLogo);
 		divisaoPrincipal.add("Center", divisaoCentral);
 		divisaoPrincipal.add("West", divisao1);
@@ -237,25 +242,58 @@ public class TeladeCadastroPes extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == inserir) {
-				if (bCpfPessoa.getText().equals("")) {
-
-					PessoaJuridica pes = new PessoaJuridica(bNomePessoa.getText(), bEndereco.getText(),
-							bTelPessoa.getText(), bCepPessoa.getText(), bBairroPessoa.getText(),
-							bCidadePessoa.getText(), bUfPessoa.getText(), bEmailPessoa.getText(), bCnpjPes.getText());
-					pessoaJuridicaDao.inserir(pes);
-					JOptionPane.showMessageDialog(null, "Pessoa inserida com sucesso!", "",
+				if(bNomePessoa.getText().isEmpty() && bEndereco.getText().isEmpty() &&
+							bTelPessoa.getText().isEmpty() && bCepPessoa.getText().isEmpty() && bBairroPessoa.getText().isEmpty() &&
+							bCidadePessoa.getText().isEmpty() && bUfPessoa.getText().isEmpty() &&
+							bEmailPessoa.getText().isEmpty() && bCnpjPes.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo(s) em branco!", "",
 							JOptionPane.INFORMATION_MESSAGE);
-
 				} else {
-					PessoaFisica pes = new PessoaFisica(bNomePessoa.getText(), bEndereco.getText(),
-							bTelPessoa.getText(), bCepPessoa.getText(), bBairroPessoa.getText(),
-							bCidadePessoa.getText(), bUfPessoa.getText(), bEmailPessoa.getText(), bCpfPessoa.getText(),
-							bRgPessoa.getText());
-					pessoaFisicaDao.inserir(pes);
+					if((!(bCpfPessoa.getText().isEmpty()) && !(bCnpjPes.getText().isEmpty()))){
+						JOptionPane.showMessageDialog(null, "Digite o CNPJ ou CPF!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+						
+					} else {
+						if (bCpfPessoa.getText().equals("")) {
+							PessoaJuridica pes;
+							pes = pessoaJuridicaDao.buscar(bCnpjPes.getText());
+							if(pes == null) {
+								pes = new PessoaJuridica(bNomePessoa.getText(), bEndereco.getText(),
+										bTelPessoa.getText(), bCepPessoa.getText(), bBairroPessoa.getText(),
+										bCidadePessoa.getText(), bUfPessoa.getText(), bEmailPessoa.getText(), bCnpjPes.getText());
+								pessoaJuridicaDao.inserir(pes);
 
-					JOptionPane.showMessageDialog(null, "Pessoa inserida com sucesso!", "",
-							JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(null, "Pessoa inserida com sucesso!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							} else {
+								JOptionPane.showMessageDialog(null, "CNPJ ja existe!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							}
+
+
+						} else {
+							PessoaFisica pes;
+							pes = pessoaFisicaDao.buscar(bCpfPessoa.getText());
+							if(pes == null) {
+								 pes = new PessoaFisica(bNomePessoa.getText(), bEndereco.getText(),
+											bTelPessoa.getText(), bCepPessoa.getText(), bBairroPessoa.getText(),
+											bCidadePessoa.getText(), bUfPessoa.getText(), bEmailPessoa.getText(), bCpfPessoa.getText(),
+											bRgPessoa.getText());
+									pessoaFisicaDao.inserir(pes);
+									JOptionPane.showMessageDialog(null, "Pessoa inserida com sucesso!", "",
+											JOptionPane.INFORMATION_MESSAGE);
+							} else {
+								JOptionPane.showMessageDialog(null, "CPF ja existe!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							} 
+
+
+
+						}
+					}
+					
 				}
+
 			}
 			if (e.getSource() == consultar) {
 				TeladeConsultaPes tela = new TeladeConsultaPes();

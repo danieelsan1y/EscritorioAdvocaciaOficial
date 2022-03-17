@@ -23,6 +23,7 @@ import dao.model.DaoFactory;
 import dao.model.ProcessoDao;
 import dao.model.TribunalDao;
 import entities.Audiencia;
+import entities.Custo;
 import entities.Processo;
 
 class TelaDeAlterarAudi extends JFrame {
@@ -91,9 +92,7 @@ class TelaDeAlterarAudi extends JFrame {
 
 	}
 
-
 	public void inserirCampos() {
-		
 
 		textoCadastro.add(new JLabel("ConsultarT"));
 		JPanel consulta = new JPanel();
@@ -108,7 +107,7 @@ class TelaDeAlterarAudi extends JFrame {
 		caixas.add(new JLabel(" "));
 		caixas.add(new JLabel("Escreva as alterações se for necessário"));
 		caixas.add(new JLabel(" "));
-	
+
 		textoCadastro.add(new JLabel("Alterar Audiência"));
 		JPanel nroAudiencia = new JPanel();
 		nroAudiencia.setLayout(new BoxLayout(nroAudiencia, BoxLayout.X_AXIS));
@@ -162,15 +161,20 @@ class TelaDeAlterarAudi extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == consultar) {
-				Audiencia audi = audienciaDao.buscar(barraConsulta.getText());
-				
-				bNroAudi.setText(audi.getNroAudi());
-				bParecerAudi.setText(audi.getParecer());
-				bProcessoAudi.setText(audi.getProcesso().getNroProcesso());
-				bDataAudi.setText(String.valueOf(sdf.format(audi.getDataAudi())));
-				JOptionPane.showMessageDialog(null, "Audiencia consultada com sucesso!", "",
-						JOptionPane.INFORMATION_MESSAGE);
-
+				if (barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Audiencia audi = audienciaDao.buscar(barraConsulta.getText());
+					if (audi == null) {
+						JOptionPane.showMessageDialog(null, "Audiencia não encontrada!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						bNroAudi.setText(audi.getNroAudi());
+						bDataAudi.setText(sdf.format(audi.getDataAudi()));
+						bParecerAudi.setText(audi.getParecer());
+						bProcessoAudi.setText(audi.getProcesso().getNroProcesso());
+					}
+				}
 			}
 			if (e.getSource() == limpar) {
 				bDataAudi.setText("");
@@ -182,27 +186,39 @@ class TelaDeAlterarAudi extends JFrame {
 			}
 
 			if (e.getSource() == alterar) {
-				Audiencia audi = audienciaDao.buscar(barraConsulta.getText());
-				Processo pro = processoDao.buscar((bProcessoAudi.getText()));
-				audi.setNroAudi(bNroAudi.getText());
-				audi.setParecer(bParecerAudi.getText());
-				audi.setProcesso(pro);
-				System.out.println(audi.conAud());
-				try {
-					audi.setDataAudi(sdf.parse(bDataAudi.getText()));
-				} catch (ParseException e1) {
-					e1.printStackTrace();
-				} finally {
-					audienciaDao.atualizar(audi);
-					JOptionPane.showMessageDialog(null, "Audiencia alterada com sucesso!", "",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
-				
+				if (bDataAudi.getText().isEmpty() || bNroAudi.getText().isEmpty() || bParecerAudi.getText().isEmpty()
+						|| bProcessoAudi.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo(s) em branco!", "", JOptionPane.INFORMATION_MESSAGE);
 
-				
+				} else {
+
+					Audiencia audi = audienciaDao.buscar(barraConsulta.getText());
+					Processo pro = processoDao.buscar((bProcessoAudi.getText()));
+					if (audi == null) {
+						JOptionPane.showMessageDialog(null, "Audiencia não encontrada!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+
+					} else {
+						if (pro == null) {
+							JOptionPane.showMessageDialog(null, "Processo não encontrado!", "",
+									JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							audi.setNroAudi(bNroAudi.getText());
+							audi.setParecer(bParecerAudi.getText());
+							audi.setProcesso(pro);
+							try {
+								audi.setDataAudi(sdf.parse(bDataAudi.getText()));
+							} catch (ParseException e1) {
+								e1.printStackTrace();
+							} finally {
+								audienciaDao.atualizar(audi);
+								JOptionPane.showMessageDialog(null, "Audiencia alterada com sucesso!", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							}
+						}
+					}
+				}
 			}
 		}
-
 	}
-
 }

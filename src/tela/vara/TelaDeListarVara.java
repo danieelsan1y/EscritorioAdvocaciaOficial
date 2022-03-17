@@ -12,6 +12,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -92,32 +93,29 @@ public class TelaDeListarVara extends JFrame {
 	}
 
 	public void ResultadoProcessos(Vara obj) {
-		
-		
-		
+
 		JTable tabela_pessoas;
 		DefaultTableModel modelo_tabela;
 
 		JPanel tabela = new JPanel();
 		tabela.setLayout(new BoxLayout(tabela, BoxLayout.Y_AXIS));
-		
+
 		JPanel textoVara = new JPanel();
 		textoVara.add(new JLabel(obj.getDesVara()));
 		textoVara.add(new JLabel(" do "));
 		textoVara.add(new JLabel(obj.getTribunal().getDesTrib()));
 		atributos.add(textoVara);
-		String[] colunas = { "Número", "Data de Abertura", "Data de Conclusão", "Situação",
-				"Autor", "Réu"};
+		String[] colunas = { "Número", "Data de Abertura", "Data de Conclusão", "Situação", "Autor", "Réu" };
 		modelo_tabela = new DefaultTableModel(colunas, 0);
 
-		
 		List<Processo> lista = new ArrayList<>();
 		varaDao.listaDeProcessos(obj);
 		lista = obj.getProcessos();
 		for (Processo processo : lista) {
-			
-			modelo_tabela.addRow(new Object[] { processo.getNroProcesso(), processo.getDataAbertura(), processo.getDataConclusao(),
-					processo.getSitucacao(), processo.getPessoaAutor().getNomePes(), processo.getPessoaReu().getNomePes()});
+
+			modelo_tabela.addRow(new Object[] { processo.getNroProcesso(), processo.getDataAbertura(),
+					processo.getDataConclusao(), processo.getSitucacao(), processo.getPessoaAutor().getNomePes(),
+					processo.getPessoaReu().getNomePes() });
 		}
 
 		tabela_pessoas = new JTable(modelo_tabela);
@@ -128,10 +126,10 @@ public class TelaDeListarVara extends JFrame {
 
 	}
 
-	public void ResultadoPJ (PessoaJuridica obj) {
-		
+	public void ResultadoPJ(PessoaJuridica obj) {
+
 	}
-	
+
 	public void acaoBotoes() {
 		ActionListenerTelaPrincipal albotoes = new ActionListenerTelaPrincipal();
 		consultar.addActionListener(albotoes);
@@ -141,16 +139,25 @@ public class TelaDeListarVara extends JFrame {
 	private class ActionListenerTelaPrincipal implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == consultar) {
-				Vara obj = varaDao.buscar(barraConsulta.getText());
-				ResultadoProcessos(obj);
-				
+				if (barraConsulta.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campo em branco!", "", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					Vara obj = varaDao.buscar(barraConsulta.getText());
+					if (obj == null) {
+						JOptionPane.showMessageDialog(null, "Vara não foi encontrada!", "", JOptionPane.INFORMATION_MESSAGE);
+					}
 
-
+					else {
+						ResultadoProcessos(obj);
+						JOptionPane.showMessageDialog(null, "Vara consultada com sucesso!", "",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
 
 			}
-			if(e.getSource() == sair) {
+			if (e.getSource() == sair) {
 				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				
+
 			}
 		}
 	}
